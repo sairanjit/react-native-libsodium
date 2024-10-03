@@ -41,7 +41,10 @@ jobs:
       - name: Add Maestro to path
         run: echo "${HOME}/.maestro/bin" >> $GITHUB_PATH
       # Run e2e test
+      # Add MAESTRO_DRIVER_STARTUP_TIMEOUT
       - name: Test
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
         run: maestro test e2e-tests/maestro-flow-ios.yml
 
       # - name: Debug

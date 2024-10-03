@@ -45,6 +45,8 @@ jobs:
       # Run emulator and e2e tests
       - name: Run Android Emulator and app
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
         with:
           api-level: 33
           arch: x86_64
