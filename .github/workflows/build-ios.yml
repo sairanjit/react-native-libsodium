@@ -20,7 +20,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Restore node_modules from cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -29,17 +29,18 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install node_modules for example/
         run: yarn install --frozen-lockfile --cwd ..
-      - name: Restore buildcache
+
+      - name: Restore build cache
         uses: mikehardy/buildcache-action@v1
         continue-on-error: true
       - name: Setup Ruby (bundle)
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.7.8 # Updated Ruby version
           bundler-cache: true
           working-directory: example/ios
       - name: Restore Pods cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             example/ios/Pods
@@ -58,16 +59,14 @@ jobs:
       - name: Install xcpretty
         run: gem install xcpretty
       - name: Build App
-        run: "set -o pipefail && xcodebuild \
-          CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
-          -derivedDataPath build -UseModernBuildSystem=YES \
-          -workspace LibsodiumExample.xcworkspace \
-          -scheme LibsodiumExample \
-          -sdk iphonesimulator \
-          -configuration Debug \
-          -destination 'platform=iOS Simulator,name=iPhone 11' \
-          build \
-          CODE_SIGNING_ALLOWED=NO | xcpretty"
-      # - name: Build iOS App
-      #   working-directory: example
-      #   run: yarn build:ios
+        run: |
+          set -o pipefail && xcodebuild \
+            CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
+            -derivedDataPath build -UseModernBuildSystem=YES \
+            -workspace LibsodiumExample.xcworkspace \
+            -scheme LibsodiumExample \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 14' \  # Updated iPhone model
+            build \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
