@@ -9,7 +9,7 @@
     "e2e-debug": "maestro hierarchy",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "pods": "pod-install --quiet",
+    "pods": "npx pod-install --quiet",
     "web": "webpack serve --config ./web/webpack.config.js --mode development --hot"
   },
   "dependencies": {
