@@ -59,14 +59,16 @@ jobs:
       - name: Install xcpretty
         run: gem install xcpretty
       - name: Build App
-        run: |
-          set -o pipefail && xcodebuild \
-            CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
-            -derivedDataPath build -UseModernBuildSystem=YES \
-            -workspace LibsodiumExample.xcworkspace \
-            -scheme LibsodiumExample \
-            -sdk iphonesimulator \
-            -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 14' \  # Updated iPhone model
-            build \
-            CODE_SIGNING_ALLOWED=NO | xcpretty
+        run: "set -o pipefail && xcodebuild \
+          CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ \
+          -derivedDataPath build -UseModernBuildSystem=YES \
+          -workspace LibsodiumExample.xcworkspace \
+          -scheme LibsodiumExample \
+          -sdk iphonesimulator \
+          -configuration Debug \
+          -destination 'platform=iOS Simulator,name=iPhone 11' \
+          build \
+          CODE_SIGNING_ALLOWED=NO | xcpretty"
+      # - name: Build iOS App
+      #   working-directory: example
+      #   run: yarn build:ios
