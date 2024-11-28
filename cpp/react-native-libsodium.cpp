@@ -1627,5 +1627,32 @@ namespace ReactNativeLibsodium
             });
 
         jsiRuntime.global().setProperty(jsiRuntime, "jsi_crypto_kdf_hkdf_sha256_expand", std::move(jsi_crypto_kdf_hkdf_sha256_expand));
+
+        auto jsi_crypto_scalarmult_base = jsi::Function::createFromHostFunction(
+            jsiRuntime,
+            jsi::PropNameID::forUtf8(jsiRuntime, "jsi_crypto_scalarmult_base"),
+            1,
+            [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments, size_t count) -> jsi::Value
+            {
+                const std::string functionName = "crypto_scalarmult_base";
+
+                std::string privateKeyArgumentName = "privateKey";
+                unsigned int privateKeyArgumentPosition = 0;
+                validateIsArrayBuffer(functionName, runtime, arguments[privateKeyArgumentPosition], privateKeyArgumentName, true);
+
+                auto privateKeyArrayBuffer = arguments[privateKeyArgumentPosition].asObject(runtime).getArrayBuffer(runtime);
+
+                std::vector<uint8_t> publicKey(crypto_scalarmult_BYTES);
+                int result = -1;
+
+                result = crypto_scalarmult_base(
+                    publicKey.data(),
+                    privateKeyArrayBuffer.data(runtime));
+
+                throwOnBadResult(functionName, runtime, result);
+                return arrayBufferAsObject(runtime, publicKey);
+            });
+
+        jsiRuntime.global().setProperty(jsiRuntime, "jsi_crypto_scalarmult_base", std::move(jsi_crypto_scalarmult_base));
     }
 } // namespace ReactNativeLibsodium

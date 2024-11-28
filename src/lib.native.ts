@@ -185,6 +185,7 @@ declare global {
     info: string,
     length: number
   ): ArrayBuffer;
+  function jsi_crypto_scalarmult_base(privateKey: ArrayBuffer): ArrayBuffer;
 }
 
 export const crypto_auth_BYTES = global.jsi_crypto_auth_BYTES;
@@ -830,6 +831,15 @@ export function crypto_aead_xchacha20poly1305_ietf_decrypt(
   );
   return convertToOutputFormat(result, outputFormat);
 }
+export function crypto_scalarmult_base(
+  privateKey: Uint8Array,
+  outputFormat: OutputFormat
+): unknown {
+  const privateKeyParam =
+    typeof privateKey === 'string' ? privateKey : privateKey.buffer;
+  const result = global.jsi_crypto_scalarmult_base(privateKeyParam);
+  return convertToOutputFormat(result, outputFormat);
+}
 
 export function _unstable_crypto_kdf_hkdf_sha256_extract(
   key: Uint8Array,
@@ -902,6 +912,7 @@ export default {
   crypto_sign_detached,
   crypto_sign_keypair,
   crypto_sign_verify_detached,
+  crypto_scalarmult_base,
   from_base64,
   randombytes_buf,
   randombytes_uniform,
