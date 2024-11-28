@@ -1197,6 +1197,33 @@ namespace ReactNativeLibsodium
 
         jsiRuntime.global().setProperty(jsiRuntime, "jsi_crypto_pwhash", std::move(jsi_crypto_pwhash));
 
+        auto jsi_crypto_sign_ed25519_sk_to_curve25519 = jsi::Function::createFromHostFunction(
+            jsiRuntime,
+            jsi::PropNameID::forUtf8(jsiRuntime, "jsi_crypto_sign_ed25519_sk_to_curve25519"),
+            1,
+            [](jsi::Runtime &runtime, const jsi::Value &thisValue, const jsi::Value *arguments, size_t count) -> jsi::Value
+            {
+                const std::string functionName = "crypto_sign_ed25519_sk_to_curve25519";
+
+                std::string privateKeyArgumentName = "privateKey";
+                unsigned int privateKeyArgumentPosition = 0;
+                validateIsArrayBuffer(functionName, runtime, arguments[privateKeyArgumentPosition], privateKeyArgumentName, true);
+
+                auto privateKeyArrayBuffer = arguments[privateKeyArgumentPosition].asObject(runtime).getArrayBuffer(runtime);
+
+                std::vector<uint8_t> privateKey(crypto_sign_SECRETKEYBYTES);
+                int result = -1;
+
+                result = crypto_sign_ed25519_sk_to_curve25519(
+                    privateKey.data(),
+                    privateKeyArrayBuffer.data(runtime));
+
+                throwOnBadResult(functionName, runtime, result);
+                return arrayBufferAsObject(runtime, privateKey);
+            });
+
+        jsiRuntime.global().setProperty(jsiRuntime, "jsi_crypto_sign_ed25519_sk_to_curve25519", std::move(jsi_crypto_sign_ed25519_sk_to_curve25519));
+
         auto jsi_crypto_sign_ed25519_pk_to_curve25519 = jsi::Function::createFromHostFunction(
             jsiRuntime,
             jsi::PropNameID::forUtf8(jsiRuntime, "jsi_crypto_sign_ed25519_pk_to_curve25519"),

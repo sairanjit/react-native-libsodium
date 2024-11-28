@@ -146,6 +146,9 @@ declare global {
     memLimit: number,
     algorithm: number
   ): ArrayBuffer;
+  function jsi_crypto_sign_ed25519_sk_to_curve25519(
+    privateKey: ArrayBuffer
+  ): ArrayBuffer;
   function jsi_crypto_sign_ed25519_pk_to_curve25519(
     publicKey: ArrayBuffer
   ): ArrayBuffer;
@@ -691,6 +694,17 @@ export function crypto_pwhash(
   );
   return convertToOutputFormat(result, outputFormat);
 }
+
+export function crypto_sign_ed25519_sk_to_curve25519(
+  privateKey: Uint8Array,
+  outputFormat?: Uint8ArrayOutputFormat | null
+) {
+  const result = global.jsi_crypto_sign_ed25519_sk_to_curve25519(
+    privateKey.buffer
+  );
+  return convertToOutputFormat(result, outputFormat);
+}
+
 export function crypto_sign_ed25519_pk_to_curve25519(
   publicKey: Uint8Array,
   outputFormat?: Uint8ArrayOutputFormat | null
